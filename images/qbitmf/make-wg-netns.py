@@ -38,6 +38,10 @@ def process_config(hop_id, iface, config_file):
     }
     if conf["Peer"].get("PresharedKey", False):
         out_conf["Peer"]["PresharedKey"] = conf["Peer"]["PresharedKey"]
+    
+    #add support for PersistentKeepalive
+    if conf["Peer"].get("PersistentKeepalive", False):
+        out_conf["Peer"]["PersistentKeepalive"] = conf["Peer"]["PersistentKeepalive"]
 
     with open(f"/interface-state/{iface}.conf", "w") as out_conf_file:
         out_conf.write(out_conf_file)
@@ -49,6 +53,10 @@ def process_config(hop_id, iface, config_file):
     run(["ip", "-n", "wg", "addr", "add", addr, "dev", iface])
     run(["ip", "-n", "wg", "link", "set", "up", "dev", iface])
     run(["ip", "-n", "wg", "nexthop", "add", "id", str(hop_id), "dev", iface])
+    #modify MTU if value is set in conf
+    if conf["Interface"].get("MTU", False):
+        mtu = conf["Interface"]["MTU"]
+        run(["ip", "-n", "wg", "link", "set", "mtu", mtu, iface])
 
 
 def main():
