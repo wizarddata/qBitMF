@@ -25,7 +25,7 @@ RUN cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr . \
 # Build qbittorrent
 ADD deps/qbittorrent-multiface /qbittorrent-multiface
 WORKDIR /qbittorrent-multiface
-CMD ./configure --disable-gui \
+RUN ./configure --disable-gui \
     && make -j$(nproc) \
     && make install
 
